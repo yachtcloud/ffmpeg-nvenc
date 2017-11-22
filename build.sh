@@ -212,9 +212,9 @@ BuildOBS() {
         git pull
 	make -j${cpus}
     else
-        git clone --recursive https://github.com/masikh/obs-studio.git
+        git clone --recursive https://github.com/yachtcloud/obs-studio.git
 	cd obs-studio/plugins
-	git clone --recursive https://github.com/masikh/obs-websocket.git
+	git clone --recursive https://github.com/yachtcloud/obs-websocket.git
         cd ..
 	cmake -DLIBOBS_INCLUDE_DIR=${source_dir}/obs-studio/libobs .
         make -j${cpus}

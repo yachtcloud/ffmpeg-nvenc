@@ -173,7 +173,7 @@ BuildVpx() {
 BuildFFmpeg() {
     echo "Compiling ffmpeg"
     cd $source_dir
-    ffmpeg_version="3.4"
+    ffmpeg_version="3.4.2"
     if [ ! -f  ffmpeg-${ffmpeg_version}.tar.bz2 ]; then
         wget -4 http://ffmpeg.org/releases/ffmpeg-${ffmpeg_version}.tar.bz2
     fi
@@ -197,7 +197,6 @@ BuildFFmpeg() {
         --enable-nonfree \
         --enable-nvenc \
         --enable-pic \
-        --enable-x11grab \
         --extra-ldexeflags=-pie \
         --enable-shared \
 	--enable-cuda \

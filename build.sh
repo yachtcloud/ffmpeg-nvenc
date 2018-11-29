@@ -121,9 +121,9 @@ BuildX264() {
 BuildFdkAac() {
     echo "Compiling libfdk-aac"
     cd $source_dir
-    wget -4 -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/zipball/master
+    wget -4 -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/archive/v0.1.6.zip #https://github.com/mstorsjo/fdk-aac/zipball/master
     unzip fdk-aac.zip
-    cd mstorsjo-fdk-aac*
+    cd fdk-aac-0.1.6
     autoreconf -fiv
     ./configure --prefix="$build_dir" # --disable-shared
     make -j${cpus}
@@ -171,9 +171,18 @@ BuildVpx() {
 }
 
 BuildFFmpeg() {
+    echo "Compiling nv-codec-headers"
+    if [ ! -d  nv-codec-headers ]; then
+        git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
+    fi
+    cd nv-codec-headers
+    make
+    make install
+    cd ..
+
     echo "Compiling ffmpeg"
     cd $source_dir
-    ffmpeg_version="3.4.2"
+    ffmpeg_version="3.4.5"
     if [ ! -f  ffmpeg-${ffmpeg_version}.tar.bz2 ]; then
         wget -4 http://ffmpeg.org/releases/ffmpeg-${ffmpeg_version}.tar.bz2
     fi
@@ -284,7 +293,7 @@ else
     BuildFFmpeg
     if [ "$build_obs" ]; then
         BuildOBS
-        MakeLauncherOBS
+        #MakeLauncherOBS
     fi
-    MakeScripts
+    #MakeScripts
 fi

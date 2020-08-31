@@ -60,15 +60,8 @@ InstallDependencies() {
 }
 
 InstallNvidiaSDK() {
-    echo "Installing the NVidia Video SDK"
-    sdk_version="6.0.1"
-    sdk_basename="nvidia_video_sdk_${sdk_version}"
-    sdk_url="http://developer.download.nvidia.com/assets/cuda/files/${sdk_basename}.zip"
-    cd $source_dir
-    wget -4 $sdk_url
-    unzip "${sdk_basename}.zip"
-    cd $sdk_basename
-    cp -a Samples/common/inc/* $inc_dir
+    echo "Installing the NVidia cuda toolkit"
+    sudo apt install -y nvidia-cuda-toolkit
 }
 
 BuildNasm() {

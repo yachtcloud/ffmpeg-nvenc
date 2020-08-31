@@ -69,10 +69,12 @@ BuildNasm() {
     cd $source_dir
     nasm_version="2.13.01"
     nasm_basename="nasm-${nasm_version}"
-    wget -4 http://www.nasm.us/pub/nasm/releasebuilds/${nasm_version}/nasm-${nasm_version}.tar.gz
+    if [ ! -f ${nasm_basename}.tar.gz ]; then
+        wget -4 http://www.nasm.us/pub/nasm/releasebuilds/${nasm_version}/nasm-${nasm_version}.tar.gz
+    fi
     tar xzf "${nasm_basename}.tar.gz"
-    cd $nasm_basename
-    ./configure --prefix="${build_dir}" --bindir="${bin_dir}"
+    mkdir -p build-$nasm_basename && cd build-$nasm_basename
+    ../$nasm_basename/configure --prefix="${build_dir}"
     make -j${cpus}
     make install
 }
@@ -82,10 +84,12 @@ BuildYasm() {
     cd $source_dir
     yasm_version="1.3.0"
     yasm_basename="yasm-${yasm_version}"
-    wget -4 http://www.tortall.net/projects/yasm/releases/${yasm_basename}.tar.gz
+    if [ ! -f ${yasm_basename}.tar.gz ]; then
+        wget -4 http://www.tortall.net/projects/yasm/releases/${yasm_basename}.tar.gz
+    fi
     tar xzf "${yasm_basename}.tar.gz"
-    cd $yasm_basename
-    ./configure --prefix="${build_dir}" --bindir="${bin_dir}"
+    mkdir -p build-$yasm_basename && cd build-$yasm_basename
+    ../$yasm_basename/configure --prefix="${build_dir}"
     make -j${cpus}
     make install
 }
@@ -93,10 +97,12 @@ BuildYasm() {
 BuildX264() {
     echo "Compiling libx264"
     cd $source_dir
-    wget -4 http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20191217-2245-stable.tar.bz2 
+    if [ ! -f "x264-snapshot-20191217-2245-stable.tar.bz2" ]; then
+        wget -4 http://download.videolan.org/pub/x264/snapshots/x264-snapshot-20191217-2245-stable.tar.bz2
+    fi
     tar xjf x264-snapshot-20191217-2245-stable.tar.bz2
-    cd x264-snapshot-20191217-2245-stable
-    ./configure --prefix="$build_dir" --bindir="$bin_dir" --enable-pic --enable-shared
+    mkdir -p build-x264 && cd build-x264
+    ../x264-snapshot-20191217-2245-stable/configure --prefix="$build_dir" --enable-static --enable-pic
     make -j${cpus}
     make install
 }
@@ -104,11 +110,15 @@ BuildX264() {
 BuildFdkAac() {
     echo "Compiling libfdk-aac"
     cd $source_dir
-    wget -4 -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/archive/v0.1.6.zip #https://github.com/mstorsjo/fdk-aac/zipball/master
+    if [ ! -f "fdk-aac.zip" ]; then
+        wget -4 -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/archive/v0.1.6.zip #https://github.com/mstorsjo/fdk-aac/zipball/master
+    fi
     unzip fdk-aac.zip
     cd fdk-aac-0.1.6
     autoreconf -fiv
-    ./configure --prefix="$build_dir" # --disable-shared
+    cd ..
+    mkdir -p build-fdk-aac-0.1.6 && cd build-fdk-aac-0.1.6
+    ../fdk-aac-0.1.6/configure --prefix="$build_dir" --disable-shared
     make -j${cpus}
     make install
 }
@@ -118,10 +128,12 @@ BuildLame() {
     cd $source_dir
     lame_version="3.99.5"
     lame_basename="lame-${lame_version}"
-    wget -4 "http://downloads.sourceforge.net/project/lame/lame/3.99/${lame_basename}.tar.gz"
+    if [ ! -f ${lame_basename}.tar.gz ]; then
+        wget -4 "http://downloads.sourceforge.net/project/lame/lame/3.99/${lame_basename}.tar.gz"
+    fi
     tar xzf "${lame_basename}.tar.gz"
-    cd $lame_basename
-    ./configure --prefix="$build_dir" --enable-nasm # --disable-shared
+    mkdir build-$lame_basename && cd build-$lame_basename
+    ../$lame_basename/configure --prefix="$build_dir" --enable-nasm --disable-shared
     make -j${cpus}
     make install
 }
@@ -131,10 +143,12 @@ BuildOpus() {
     cd $source_dir
     opus_version="1.1"
     opus_basename="opus-${opus_version}"
-    wget -4 "http://downloads.xiph.org/releases/opus/${opus_basename}.tar.gz"
+    if [ ! -f ${opus_basename}.tar.gz ]; then
+        wget -4 "http://downloads.xiph.org/releases/opus/${opus_basename}.tar.gz"
+    fi
     tar xzf "${opus_basename}.tar.gz"
-    cd $opus_basename
-    ./configure --prefix="$build_dir" # --disable-shared
+    mkdir -p build-$opus_basename && cd build-$opus_basename
+    ../$opus_basename/configure --prefix="$build_dir" --disable-shared --enable-static
     make -j${cpus}
     make install
 }
@@ -144,11 +158,13 @@ BuildVpx() {
     cd $source_dir
     vpx_version="1.5.0"
     vpx_basename="libvpx-${vpx_version}"
-    vpx_url="http://storage.googleapis.com/downloads.webmproject.org/releases/webm/${vpx_basename}.tar.bz2"
-    wget -4 $vpx_url
+    if [ ! -f ${vpx_basename}.tar.bz2 ]; then
+        vpx_url="http://storage.googleapis.com/downloads.webmproject.org/releases/webm/${vpx_basename}.tar.bz2"
+        wget -4 $vpx_url
+    fi
     tar xjf "${vpx_basename}.tar.bz2"
-    cd $vpx_basename
-    ./configure --prefix="$build_dir" --disable-examples --enable-shared --disable-static
+    mkdir -p build-$vpx_basename && cd build-$vpx_basename
+    ../$vpx_basename/configure --prefix="$build_dir" --disable-examples --disable-shared --enable-static --enable-pic
     make -j${cpus}
     make install
 }
@@ -160,18 +176,18 @@ BuildFFmpeg() {
     fi
     cd nv-codec-headers
     make
-    make install
+    sudo make install
     cd ..
 
     echo "Compiling ffmpeg"
     cd $source_dir
-    ffmpeg_version="3.4.5"
+    ffmpeg_version="4.3.1"
     if [ ! -f  ffmpeg-${ffmpeg_version}.tar.bz2 ]; then
         wget -4 http://ffmpeg.org/releases/ffmpeg-${ffmpeg_version}.tar.bz2
     fi
     tar xjf ffmpeg-${ffmpeg_version}.tar.bz2
-    cd ffmpeg-${ffmpeg_version}
-    PKG_CONFIG_PATH="${build_dir}/lib/pkgconfig" ./configure \
+    mkdir -p build-ffmpeg-${ffmpeg_version} && cd build-ffmpeg-${ffmpeg_version}
+    PKG_CONFIG_PATH="${build_dir}/lib/pkgconfig" ../ffmpeg-${ffmpeg_version}/configure \
         --prefix="$build_dir" \
         --extra-cflags="-fPIC -m64 -I${inc_dir}" \
         --extra-ldflags="-L${build_dir}/lib" \
@@ -181,18 +197,14 @@ BuildFFmpeg() {
         --enable-libfdk-aac \
         --enable-libfreetype \
         --enable-libmp3lame \
-        --enable-libopus \
         --enable-libtheora \
         --enable-libvorbis \
         --enable-libvpx \
         --enable-libx264 \
         --enable-nonfree \
         --enable-nvenc \
-        --enable-pic \
-        --extra-ldexeflags=-pie \
-        --enable-shared \
-	--enable-cuda \
-	--enable-cuvid
+	    --enable-cuda-nvcc \
+        --enable-libnpp
     make -j${cpus}
     make install
 }

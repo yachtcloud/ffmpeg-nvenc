@@ -44,25 +44,7 @@ mkdir -p $inc_dir
 
 echo "Building FFmpeg in ${build_dir}"
 
-export PATH=$bin_dir:$PATH
-
-InstallDependencies() {
-    echo "Installing dependencies"
-    sudo apt-get -y --force-yes install git autoconf automake build-essential libass-dev \
-        libfreetype6-dev libgpac-dev libsdl1.2-dev libtheora-dev libtool libva-dev \
-        libvdpau-dev libvorbis-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev \
-        libqt5x11extras5-dev libxcb-xinerama0-dev libvlc-dev libv4l-dev   \
-        pkg-config texi2html zlib1g-dev cmake libcurl4-openssl-dev \
-        libjack-jackd2-dev libxcomposite-dev x11proto-composite-dev \
-        libx264-dev libgl1-mesa-dev libglu1-mesa-dev libasound2-dev \
-        libpulse-dev libx11-dev libxext-dev libxfixes-dev \
-        libxi-dev qt5-default qttools5-dev qt5-qmake qtbase5-dev
-}
-
-InstallNvidiaSDK() {
-    echo "Installing the NVidia cuda toolkit"
-    sudo apt install -y nvidia-cuda-toolkit
-}
+export PATH=/usr/local/cuda/bin:$bin_dir:$PATH
 
 BuildNasm() {
     echo "Compiling nasm"
@@ -172,16 +154,18 @@ BuildVpx() {
     make install
 }
 
-BuildFFmpeg() {
+BuildCodecHeaders() {
     echo "Compiling nv-codec-headers"
+    cd $source_dir
     if [ ! -d  nv-codec-headers ]; then
         git clone https://git.videolan.org/git/ffmpeg/nv-codec-headers.git
     fi
     cd nv-codec-headers
     make
     sudo make install
-    cd ..
+}
 
+BuildFFmpeg() {
     echo "Compiling ffmpeg"
     cd $source_dir
     ffmpeg_version="4.3.1"
@@ -275,8 +259,7 @@ EOF
 if [ $1 ]; then
     $1
 else
-    InstallDependencies
-    InstallNvidiaSDK
+    BuildCodecHeaders
     BuildNasm
     BuildYasm
     BuildX264

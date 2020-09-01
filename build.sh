@@ -196,6 +196,7 @@ BuildFFmpeg() {
         --enable-gpl \
         --enable-libfdk-aac \
         --enable-libmp3lame \
+        --enable-libopus \
         --enable-libvpx \
         --enable-libx264 \
         --enable-nonfree \

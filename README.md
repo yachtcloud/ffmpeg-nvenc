@@ -11,6 +11,14 @@ It is brought to you by [Linux GameCast](http://linuxgamecast.com/) and
 
 This script has been adjusted to get the OBS-Studio (forked) code from masikh and incorporate the OBS-Studio-websocket support.
 
+## Attention
+
+The libopus library makes some trouble when building statically.
+To use it we need to edit it's pkg-config file and add '-lm' in the main library section.
+
+Not sure, but looks like a bug in autotools that it is not pulled from the
+Library.private section.
+
 ## Usage
 
 Clone the repo then use the `build.sh` script to compile the binaries

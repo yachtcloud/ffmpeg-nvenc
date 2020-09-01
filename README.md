@@ -48,6 +48,8 @@ sudo apt-get update
 sudo apt-get -y install cuda
 ```
 
+Above commans are part of the `install_sysreqs.sh` script that will be executed by
+liveQ's `install.sh`.
 
 ## Usage
 

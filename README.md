@@ -48,9 +48,7 @@ sudo apt-get update
 sudo apt-get -y install cuda
 ```
 
-Above commans are part of the `install_sysreqs.sh` script that will be executed by
-liveQ's `install.sh`.
-
+Above commans are part of the `install_sysreqs.sh` script.
 ## Usage
 
 Clone the repo then use the `build.sh` script to compile the binaries
@@ -58,6 +56,7 @@ Clone the repo then use the `build.sh` script to compile the binaries
 ```
 git clone https://github.com/yachtcloud/ffmpeg-nvenc.git
 cd ffmpeg-nvenc
+git checkout update-buildscript
 sudo ./build.sh --dest /usr/local -o
 ```
 

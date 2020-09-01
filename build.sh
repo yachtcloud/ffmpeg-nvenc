@@ -42,7 +42,7 @@ mkdir -p $bin_dir
 inc_dir="${build_dir}/include"
 mkdir -p $inc_dir
 
-echo "Building FFmpeg in ${build_dir}"
+echo "Set build output directory to: ${build_dir}"
 
 export PATH=/usr/local/cuda/bin:$bin_dir:$PATH
 

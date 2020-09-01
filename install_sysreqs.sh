@@ -21,7 +21,7 @@ if [ $osver == "18.04" ]; then
     sudo apt-get update
     sudo apt-get -y install cuda
 
-elif [ $osver == "20.04"]; then
+elif [ $osver == "20.04" ]; then
     echo "Get nvidia cuda for Ubuntu 20.04"
     wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
     sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
@@ -30,7 +30,7 @@ elif [ $osver == "20.04"]; then
     sudo apt-key add /var/cuda-repo-ubuntu2004-11-0-local/7fa2af80.pub
     sudo apt-get update
     sudo apt-get -y install cuda
-elif
+else
     echo "Unsupported operating system."
     echo "You need to install cuda manually!"
 fi

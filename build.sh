@@ -67,12 +67,12 @@ InstallNvidiaSDK() {
 BuildNasm() {
     echo "Compiling nasm"
     cd $source_dir
-    nasm_version="2.13.01"
+    nasm_version="2.15.05"
     nasm_basename="nasm-${nasm_version}"
-    if [ ! -f ${nasm_basename}.tar.gz ]; then
-        wget -4 http://www.nasm.us/pub/nasm/releasebuilds/${nasm_version}/nasm-${nasm_version}.tar.gz
+    if [ ! -f ${nasm_basename}.tar.bz2 ]; then
+        wget -4 http://www.nasm.us/pub/nasm/releasebuilds/${nasm_version}/nasm-${nasm_version}.tar.bz2
     fi
-    tar xzf "${nasm_basename}.tar.gz"
+    tar xjf "${nasm_basename}.tar.bz2"
     mkdir -p build-$nasm_basename && cd build-$nasm_basename
     ../$nasm_basename/configure --prefix="${build_dir}"
     make -j${cpus}
@@ -110,15 +110,15 @@ BuildX264() {
 BuildFdkAac() {
     echo "Compiling libfdk-aac"
     cd $source_dir
-    if [ ! -f "fdk-aac.zip" ]; then
-        wget -4 -O fdk-aac.zip https://github.com/mstorsjo/fdk-aac/archive/v0.1.6.zip #https://github.com/mstorsjo/fdk-aac/zipball/master
+    if [ ! -f "fdk-aac-2.0.1.tar.gz" ]; then
+        wget -4 -O fdk-aac-2.0.1.tar.gz https://github.com/mstorsjo/fdk-aac/archive/v2.0.1.tar.gz
     fi
-    unzip fdk-aac.zip
-    cd fdk-aac-0.1.6
+    tar xzf fdk-aac-2.0.1.tar.gz
+    cd fdk-aac-2.0.1
     autoreconf -fiv
     cd ..
-    mkdir -p build-fdk-aac-0.1.6 && cd build-fdk-aac-0.1.6
-    ../fdk-aac-0.1.6/configure --prefix="$build_dir" --disable-shared
+    mkdir -p build-fdk-aac-2.0.1 && cd build-fdk-aac-2.0.1
+    ../fdk-aac-2.0.1/configure --prefix="$build_dir" --disable-shared
     make -j${cpus}
     make install
 }
@@ -126,10 +126,10 @@ BuildFdkAac() {
 BuildLame() {
     echo "Compiling libmp3lame"
     cd $source_dir
-    lame_version="3.99.5"
+    lame_version="3.100"
     lame_basename="lame-${lame_version}"
     if [ ! -f ${lame_basename}.tar.gz ]; then
-        wget -4 "http://downloads.sourceforge.net/project/lame/lame/3.99/${lame_basename}.tar.gz"
+        wget -4 "http://downloads.sourceforge.net/project/lame/lame/3.100/${lame_basename}.tar.gz"
     fi
     tar xzf "${lame_basename}.tar.gz"
     mkdir build-$lame_basename && cd build-$lame_basename
@@ -141,12 +141,15 @@ BuildLame() {
 BuildOpus() {
     echo "Compiling libopus"
     cd $source_dir
-    opus_version="1.1"
+    opus_version="1.3.1"
     opus_basename="opus-${opus_version}"
     if [ ! -f ${opus_basename}.tar.gz ]; then
-        wget -4 "http://downloads.xiph.org/releases/opus/${opus_basename}.tar.gz"
+        wget -4 -O "${opus_basename}.tar.gz" "https://github.com/xiph/opus/archive/v${opus_version}.tar.gz"
     fi
     tar xzf "${opus_basename}.tar.gz"
+    cd $opus_basename
+    autoreconf -fiv
+    cd ..
     mkdir -p build-$opus_basename && cd build-$opus_basename
     ../$opus_basename/configure --prefix="$build_dir" --disable-shared --enable-static
     make -j${cpus}
@@ -156,13 +159,12 @@ BuildOpus() {
 BuildVpx() {
     echo "Compiling libvpx"
     cd $source_dir
-    vpx_version="1.5.0"
+    vpx_version="1.9.0"
     vpx_basename="libvpx-${vpx_version}"
-    if [ ! -f ${vpx_basename}.tar.bz2 ]; then
-        vpx_url="http://storage.googleapis.com/downloads.webmproject.org/releases/webm/${vpx_basename}.tar.bz2"
-        wget -4 $vpx_url
+    if [ ! -f ${vpx_basename}.tar.gz ]; then
+        wget -4 -O "${vpx_basename}.tar.gz" "https://github.com/webmproject/libvpx/archive/v${vpx_version}.tar.gz"
     fi
-    tar xjf "${vpx_basename}.tar.bz2"
+    tar xzf "${vpx_basename}.tar.gz"
     mkdir -p build-$vpx_basename && cd build-$vpx_basename
     ../$vpx_basename/configure --prefix="$build_dir" --disable-examples --disable-shared --enable-static --enable-pic
     make -j${cpus}

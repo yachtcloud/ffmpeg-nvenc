@@ -141,10 +141,11 @@ BuildLame() {
 BuildOpus() {
     echo "Compiling libopus"
     cd $source_dir
-    opus_version="1.3.1"
+    opus_version="fix-pkg-conf"
     opus_basename="opus-${opus_version}"
     if [ ! -f ${opus_basename}.tar.gz ]; then
-        wget -4 -O "${opus_basename}.tar.gz" "https://github.com/xiph/opus/archive/v${opus_version}.tar.gz"
+        #wget -4 -O "${opus_basename}.tar.gz" "https://github.com/xiph/opus/archive/${opus_version}.tar.gz"
+        wget -4 -O "${opus_basename}.tar.gz" "https://github.com/a1rwulf/opus/archive/${opus_version}.tar.gz"
     fi
     tar xzf "${opus_basename}.tar.gz"
     cd $opus_basename

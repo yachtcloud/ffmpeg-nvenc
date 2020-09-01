@@ -198,16 +198,33 @@ BuildOBS() {
     if [ -d obs-studio ]; then
         cd obs-studio
         git pull
-	make -j${cpus}
+        mkdir -p build && cd build
+	    make -j${cpus}
     else
+        if [ ! -f cef_binary_3770_linux64.tar.bz2 ]; then
+            wget https://cdn-fastly.obsproject.com/downloads/cef_binary_3770_linux64.tar.bz2
+        fi
+        tar -xjf ./cef_binary_3770_linux64.tar.bz2
         git clone --recursive https://github.com/yachtcloud/obs-studio.git
-	cd obs-studio/plugins
-	git clone --recursive https://github.com/yachtcloud/obs-websocket.git
-        cd ..
-	cmake -DLIBOBS_INCLUDE_DIR=${source_dir}/obs-studio/libobs .
+	    cd obs-studio
+        mkdir -p build && cd build
+        cmake -DUNIX_STRUCTURE=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$build_dir" DCEF_ROOT_DIR="../../cef_binary_3770_linux64" ..
         make -j${cpus}
-	echo "add_subdirectory(obs-websocket)" >> plugins/CMakeLists.txt
-        cmake -DLIBOBS_INCLUDE_DIR=${source_dir}/obs-studio/libobs -DLIBOBS_LIB=${source_dir}/obs-studio/libobs/libobs.so .
+    fi
+    make install
+
+    cd $source_dir
+    if [ -d obs-websocket ]; then
+        cd obs-websocket
+        git pull
+        mkdir -p build && cd build
+        make -j${cpus}
+    else
+        git clone --recursive https://github.com/yachtcloud/obs-websocket.git
+        cd obs-websocket
+        mkdir build && cd build
+        cmake -DLIBOBS_INCLUDE_DIR=${source_dir}/obs-studio/libobs -DCMAKE_INSTALL_PREFIX="$build_dir" -DUSE_UBUNTU_FIX=true ..
+        make -j${cpus}
     fi
     make install
 }
@@ -270,7 +287,5 @@ else
     BuildFFmpeg
     if [ "$build_obs" ]; then
         BuildOBS
-        #MakeLauncherOBS
     fi
-    #MakeScripts
 fi

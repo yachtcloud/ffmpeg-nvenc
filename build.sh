@@ -191,9 +191,8 @@ BuildFFmpeg() {
     mkdir -p build-ffmpeg-${ffmpeg_version} && cd build-ffmpeg-${ffmpeg_version}
     PKG_CONFIG_PATH="${build_dir}/lib/pkgconfig" ../ffmpeg-${ffmpeg_version}/configure \
         --prefix="$build_dir" \
-        --extra-cflags="-fPIC -m64 -I${inc_dir}" \
-        --extra-ldflags="-L${build_dir}/lib" \
-        --bindir="$bin_dir" \
+        --extra-cflags="-fPIC -m64 -I${inc_dir} -I/usr/local/cuda/include" \
+        --extra-ldflags="-L${build_dir}/lib -L/usr/local/cuda/lib64" \
         --enable-gpl \
         --enable-libass \
         --enable-libfdk-aac \

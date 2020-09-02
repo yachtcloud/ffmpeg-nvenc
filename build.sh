@@ -84,7 +84,7 @@ BuildX264() {
     fi
     tar xjf x264-snapshot-20191217-2245-stable.tar.bz2
     mkdir -p build-x264 && cd build-x264
-    ../x264-snapshot-20191217-2245-stable/configure --prefix="$build_dir" --enable-static --enable-pic
+    ../x264-snapshot-20191217-2245-stable/configure --prefix="$build_dir" --enable-pic --enable-shared
     make -j${cpus}
     make install
 }
@@ -100,7 +100,7 @@ BuildFdkAac() {
     autoreconf -fiv
     cd ..
     mkdir -p build-fdk-aac-2.0.1 && cd build-fdk-aac-2.0.1
-    ../fdk-aac-2.0.1/configure --prefix="$build_dir" --disable-shared
+    CFLAGS="-fPIC" ../fdk-aac-2.0.1/configure --prefix="$build_dir" 
     make -j${cpus}
     make install
 }
@@ -115,7 +115,7 @@ BuildLame() {
     fi
     tar xzf "${lame_basename}.tar.gz"
     mkdir build-$lame_basename && cd build-$lame_basename
-    ../$lame_basename/configure --prefix="$build_dir" --enable-nasm --disable-shared
+    ../$lame_basename/configure --prefix="$build_dir" --enable-nasm
     make -j${cpus}
     make install
 }
@@ -134,7 +134,7 @@ BuildOpus() {
     autoreconf -fiv
     cd ..
     mkdir -p build-$opus_basename && cd build-$opus_basename
-    ../$opus_basename/configure --prefix="$build_dir" --disable-shared --enable-static
+    ../$opus_basename/configure --prefix="$build_dir"
     make -j${cpus}
     make install
 }
@@ -149,7 +149,7 @@ BuildVpx() {
     fi
     tar xzf "${vpx_basename}.tar.gz"
     mkdir -p build-$vpx_basename && cd build-$vpx_basename
-    ../$vpx_basename/configure --prefix="$build_dir" --disable-examples --disable-shared --enable-static --enable-pic
+    ../$vpx_basename/configure --prefix="$build_dir" --disable-examples --enable-pic
     make -j${cpus}
     make install
 }
@@ -186,8 +186,9 @@ BuildFFmpeg() {
         --enable-libx264 \
         --enable-nonfree \
         --enable-nvenc \
-	    --enable-cuda-nvcc \
-        --enable-libnpp
+	--enable-shared \
+        --enable-libnpp 
+#	--enable-cuda-nvcc 
     make -j${cpus}
     make install
 }
@@ -208,6 +209,7 @@ BuildOBS() {
         git clone --recursive -b feature_media-stall https://github.com/yachtcloud/obs-studio.git
 	    cd obs-studio
         mkdir -p build && cd build
+	export CFLAGS=-fPIC
         cmake -DUNIX_STRUCTURE=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$build_dir" DCEF_ROOT_DIR="../../cef_binary_3770_linux64" ..
         make -j${cpus}
     fi

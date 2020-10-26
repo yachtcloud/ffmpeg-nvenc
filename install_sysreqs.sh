@@ -13,23 +13,12 @@ sudo apt-get -y --force-yes install git autoconf automake build-essential libass
 
 osver=$(lsb_release -sr)
 
-if [ $osver == "18.04" ]; then
-    echo "Get nvidia cuda for Ubuntu 18.04"
-    wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
-    sudo mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
-    wget https://developer.download.nvidia.com/compute/cuda/11.0.3/local_installers/cuda-repo-ubuntu1804-11-0-local_11.0.3-450.51.06-1_amd64.deb
-    sudo dpkg -i cuda-repo-ubuntu1804-11-0-local_11.0.3-450.51.06-1_amd64.deb
-    sudo apt-key add /var/cuda-repo-ubuntu1804-11-0-local/7fa2af80.pub
-    sudo apt-get update
-    sudo apt-get -y install cuda
-
-elif [ $osver == "20.04" ]; then
+if [ $osver == "20.04" ]; then
     echo "Get nvidia cuda for Ubuntu 20.04"
     wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-ubuntu2004.pin
     sudo mv cuda-ubuntu2004.pin /etc/apt/preferences.d/cuda-repository-pin-600
-    wget https://developer.download.nvidia.com/compute/cuda/11.0.3/local_installers/cuda-repo-ubuntu2004-11-0-local_11.0.3-450.51.06-1_amd64.deb
-    sudo dpkg -i cuda-repo-ubuntu2004-11-0-local_11.0.3-450.51.06-1_amd64.deb
-    sudo apt-key add /var/cuda-repo-ubuntu2004-11-0-local/7fa2af80.pub
+    sudo apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/7fa2af80.pub
+    sudo add-apt-repository "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/ /"
     sudo apt-get update
     sudo apt-get -y install cuda
 else
